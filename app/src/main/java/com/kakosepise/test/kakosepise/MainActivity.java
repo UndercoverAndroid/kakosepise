@@ -15,14 +15,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void sendMessage(View view)
     {
-        EditText editMessage=(EditText)findViewById(R.id.search);
-        TextView textView = (TextView) findViewById(R.id.textView);
-
-        String messageString=editMessage.getText().toString();
-
-        textView.setText(messageString);
-
-        editMessage.setText("");
+        
 
     }
 }
