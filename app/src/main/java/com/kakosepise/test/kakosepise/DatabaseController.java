@@ -39,6 +39,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     }
 
+    // Adds a single row into the database
     public boolean addEntry(Entry _entry) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -50,5 +51,11 @@ public class DatabaseController extends SQLiteOpenHelper {
 
         // Returns true if the insert was successful
         return db.insert(m_KAKOSEPISE_TABLE, null, cv)!=-1;
+    }
+
+    // TODO: Add REST API call for fetching json response
+    // Updates database, return value is success indicator
+    public boolean updateDatabase(){
+        return true;
     }
 }

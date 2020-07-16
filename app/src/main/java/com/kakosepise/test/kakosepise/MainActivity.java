@@ -26,16 +26,16 @@ public class MainActivity extends AppCompatActivity {
         toastButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Entry newEntry = new Entry(1,"This is some content","Test content","content-test");
+                Entry newEntry = new Entry(1, "This is some content", "Test content", "content-test");
                 DatabaseController db = new DatabaseController(MainActivity.this);
                 boolean success = db.addEntry(newEntry);
 
-                Toast.makeText(MainActivity.this,"Success= "+success, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Success= " + success, Toast.LENGTH_SHORT).show();
             }
         });
     }
-    public void sendMessage(View view)
-    {
+
+    public void sendMessage(View view) {
 
 
     }
