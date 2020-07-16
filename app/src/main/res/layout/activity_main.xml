@@ -50,4 +50,10 @@
         android:inputType="textPassword"
         android:textColorHint="@color/colorAccent" />
 
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_field_username"
+        android:id="@+id/list_view"/>
+
 </RelativeLayout>
