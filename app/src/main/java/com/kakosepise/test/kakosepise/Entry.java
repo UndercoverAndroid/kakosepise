@@ -1,5 +1,7 @@
 package com.kakosepise.test.kakosepise;
 
+import org.w3c.dom.Entity;
+
 public class Entry {
     private int m_ID;
     private String m_post_content;
@@ -11,6 +13,13 @@ public class Entry {
         this.m_post_content = m_post_content;
         this.m_post_title = m_post_title;
         this.m_post_name = m_post_name;
+    }
+
+    // Partial copy constructor, leaves ID unchanged
+    public void copyContent(Entry _other) {
+        this.m_post_content = _other.getM_post_content();
+        this.m_post_name = _other.getM_post_name();
+        this.m_post_title = _other.getM_post_title();
     }
 
     public Entry() {

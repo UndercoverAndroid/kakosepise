@@ -22,7 +22,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         super(_context, "entry.db", null, 1);
     }
 
-    // Called when the database is first generated, contains sqlite statemets that
+    // Called when the database is first generated, contains sqlite statements that
     // generate the base tables
     @Override
     public void onCreate(SQLiteDatabase _sqLiteDatabase) {
@@ -63,7 +63,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         return true;
     }
 
-    public List<Entry> getAll() {
+    public List<Entry> getAllEntries() {
         List<Entry> returnList = new ArrayList<>();
 
         // Make get-all querry
@@ -91,5 +91,48 @@ public class DatabaseController extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return returnList;
+    }
+
+    // Method that updates existing entry in local db with new values
+    public boolean updateEntry(Entry _newEntry) {
+        int updates = 0;
+        ContentValues cv = new ContentValues();
+        cv.put(m_POST_CONTENT, _newEntry.getM_post_content());
+        cv.put(m_POST_TITLE, _newEntry.getM_post_title());
+        cv.put(m_POST_NAME, _newEntry.getM_post_name());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String idString = Integer.toString(_newEntry.getM_ID());
+
+        updates = db.update(m_KAKOSEPISE_TABLE, cv, m_ID + " = ?", new String[]{idString});
+
+        db.close();
+        return updates > 0;
+    }
+
+    // Method that updates multiple existing entries in local db with new values
+    // TODO: Second loop a bit janky, implement in one
+    public boolean updateEntries(List<Entry> _newEntries) {
+        int updates = 0;
+        List<ContentValues> cvs = new ArrayList<ContentValues>();
+        int numExpectedUpdates = _newEntries.size();
+        String[] idStrings = new String[numExpectedUpdates];
+
+
+        for (int i = 0; i < numExpectedUpdates; i++) {
+            cvs.get(i).put(m_POST_CONTENT, _newEntries.get(i).getM_post_content());
+            cvs.get(i).put(m_POST_TITLE, _newEntries.get(i).getM_post_title());
+            cvs.get(i).put(m_POST_NAME, _newEntries.get(i).getM_post_name());
+            idStrings[i] = Integer.toString(_newEntries.get(i).getM_ID());
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for (int i = 0; i < numExpectedUpdates; i++) {
+            updates += db.update(m_KAKOSEPISE_TABLE, cvs.get(i), m_ID + " = ?", idStrings);
+        }
+
+        db.close();
+        return updates == numExpectedUpdates;
     }
 }

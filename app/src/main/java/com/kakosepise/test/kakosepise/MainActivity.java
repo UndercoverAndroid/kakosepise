@@ -1,6 +1,5 @@
 package com.kakosepise.test.kakosepise;
 
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -41,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DatabaseController db = new DatabaseController(MainActivity.this);
-                List<Entry> everyone = db.getAll();
+                List<Entry> everyone = db.getAllEntries();
 
-                Toast.makeText(MainActivity.this,everyone.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, everyone.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
