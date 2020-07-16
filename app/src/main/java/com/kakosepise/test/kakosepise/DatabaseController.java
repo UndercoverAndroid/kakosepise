@@ -2,9 +2,13 @@ package com.kakosepise.test.kakosepise;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseController extends SQLiteOpenHelper {
 
@@ -50,12 +54,42 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put(m_POST_TITLE, _entry.getM_post_title());
 
         // Returns true if the insert was successful
-        return db.insert(m_KAKOSEPISE_TABLE, null, cv)!=-1;
+        return db.insert(m_KAKOSEPISE_TABLE, null, cv) != -1;
     }
 
     // TODO: Add REST API call for fetching json response
     // Updates database, return value is success indicator
-    public boolean updateDatabase(){
+    public boolean updateDatabase() {
         return true;
+    }
+
+    public List<Entry> getAll() {
+        List<Entry> returnList = new ArrayList<>();
+
+        // Make get-all querry
+        String queryString = "select * from " + m_KAKOSEPISE_TABLE;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(queryString, null);
+
+        // If there are results, loop while there is a next entry in the database
+        if (cursor.moveToFirst()) {
+            do {
+                // Save
+                int id = cursor.getInt(0);
+                String content = cursor.getString(1);
+                String title = cursor.getString(2);
+                String name = cursor.getString(3);
+
+                Entry entry = new Entry(id, content, title, name);
+                returnList.add(entry);
+            } while (cursor.moveToNext());
+        } else {
+            // failure, do not add anything to the list
+        }
+        cursor.close();
+        db.close();
+        return returnList;
     }
 }

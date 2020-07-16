@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">KakoSePise</string>
-    <string name="loginText">Login</string>
+    <string name="loginText">Init Data</string>
     <string name="usernameText">Username</string>
     <string name="passwordString">Password</string>
+    <string name="id">ID</string>
 </resources>

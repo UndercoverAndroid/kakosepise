@@ -1,36 +1,49 @@
 package com.kakosepise.test.kakosepise;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    Button toastButton;
-    ListView list;
+    Button m_toastButton, m_viewAllButton;
+    ListView m_list;
+    static int counter = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        list = findViewById(R.id.list_view);
-        toastButton = findViewById(R.id.button_login);
+        m_list = findViewById(R.id.list_view);
+        m_toastButton = findViewById(R.id.button_init);
+        m_viewAllButton = findViewById(R.id.button2);
 
-        toastButton.setOnClickListener(new View.OnClickListener() {
+        m_toastButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Entry newEntry = new Entry(1, "This is some content", "Test content", "content-test");
+                Entry newEntry = new Entry(++counter, "This is some content", "Test content", "content-test");
                 DatabaseController db = new DatabaseController(MainActivity.this);
                 boolean success = db.addEntry(newEntry);
 
-                Toast.makeText(MainActivity.this, "Success= " + success, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Success = " + success, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        m_viewAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseController db = new DatabaseController(MainActivity.this);
+                List<Entry> everyone = db.getAll();
+
+                Toast.makeText(MainActivity.this,everyone.toString(),Toast.LENGTH_SHORT).show();
             }
         });
     }
