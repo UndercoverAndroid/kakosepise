@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 
@@ -22,14 +25,42 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         m_list = findViewById(R.id.list_view);
         m_toastButton = findViewById(R.id.button_init);
         m_viewAllButton = findViewById(R.id.button2);
+
+        // Database initialization
+        // Step 1 - We create an empty database
         m_db = new DatabaseController(MainActivity.this);
-        final List<Entry> everyone = m_db.getAllEntries();
+
+        if(!m_db.isFilled()) {
+            // Step 2 - We fill it up with the rows from dataInit.sql in the asset folder
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(
+                        new InputStreamReader(getAssets().open(DatabaseController.m_INIT_PATH)));
+
+                // do reading, usually loop until end of file reading
+                String nextSql;
+                while ((nextSql = reader.readLine()) != null) {
+                    m_db.execCommand(nextSql.trim());
+                }
+            } catch (IOException e) {
+                //log the exception
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        //log the exception
+                    }
+                }
+            }
+        }
         showCustomersInListView();
 
 

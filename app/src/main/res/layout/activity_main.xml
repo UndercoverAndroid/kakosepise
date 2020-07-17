@@ -89,9 +89,10 @@
         android:layout_marginEnd="101dp"
         android:layout_marginRight="101dp"
         android:layout_marginBottom="68dp"
-        android:textColorHint="@color/colorAccent"
+
+        android:hint="ID"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/id" />
+        android:textColorHint="@color/colorAccent"/>
 
 </RelativeLayout>

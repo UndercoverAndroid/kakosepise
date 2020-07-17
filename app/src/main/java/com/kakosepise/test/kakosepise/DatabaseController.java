@@ -3,6 +3,7 @@ package com.kakosepise.test.kakosepise;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
@@ -10,11 +11,13 @@ import android.support.annotation.Nullable;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class DatabaseController extends SQLiteOpenHelper {
 
@@ -23,6 +26,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public static final String m_POST_CONTENT = "post_content";
     public static final String m_POST_TITLE = "post_title";
     public static final String m_POST_NAME = "post_name";
+    public static final String m_INIT_PATH = "database/dataInit.sql";
     public static final String DB_FILE_PATH = "kakosepise.db";
     public static final String LOCAL_DB_FILE_PATH = "localDatabase.db";
 
@@ -35,23 +39,39 @@ public class DatabaseController extends SQLiteOpenHelper {
     // generate the base tables
     @Override
     public void onCreate(SQLiteDatabase _sqLiteDatabase) {
-//        String createTableStatement = "CREATE TABLE " + m_ENTRY_TABLE_NAME + " (\n" +
-//                "\t\"" + m_ID + "\"\tINTEGER NOT NULL UNIQUE,\n" +
-//                "\t\"" + m_POST_CONTENT + "\"\tTEXT NOT NULL,\n" +
-//                "\t\"" + m_POST_TITLE + "\"\tTEXT NOT NULL,\n" +
-//                "\t\"" + m_POST_NAME + "\"\tTEXT NOT NULL DEFAULT '',\n" +
-//                "\tPRIMARY KEY(\"" + m_ID + "\")\n" +
-//                ");";
-//        _sqLiteDatabase.execSQL(createTableStatement);
+        // Making the kakosepise table
+        String createTableStatement = "CREATE TABLE " + m_ENTRY_TABLE_NAME + " (\n" +
+                "\t\"" + m_ID + "\"\tINTEGER NOT NULL UNIQUE,\n" +
+                "\t\"" + m_POST_CONTENT + "\"\tTEXT NOT NULL,\n" +
+                "\t\"" + m_POST_TITLE + "\"\tTEXT NOT NULL,\n" +
+                "\t\"" + m_POST_NAME + "\"\tTEXT NOT NULL DEFAULT '',\n" +
+                "\tPRIMARY KEY(\"" + m_ID + "\")\n" +
+                ");";
+        _sqLiteDatabase.execSQL(createTableStatement);
+
+
+        // Injecting starting values stored in dataInit.sql
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(new File(m_INIT_PATH));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (scanner!=null) {
+            while (scanner.hasNextLine()) {
+                String nextSqlStatement = scanner.nextLine().trim();
+                _sqLiteDatabase.execSQL(nextSqlStatement);
+            }
+        }
 
     }
 
     // Called when version number of application changes, used for forward compatibility
     @Override
     public void onUpgrade(SQLiteDatabase _sqLiteDatabase, int _oldVersion, int _newVersion) {
-        String sql = "DROP TABLE IF EXISTS " + m_ENTRY_TABLE_NAME;
-        _sqLiteDatabase.execSQL(sql);
-        onCreate(_sqLiteDatabase);
+//        String sql = "DROP TABLE IF EXISTS " + m_ENTRY_TABLE_NAME;
+//        _sqLiteDatabase.execSQL(sql);
+//        onCreate(_sqLiteDatabase);
     }
 
 
@@ -75,6 +95,13 @@ public class DatabaseController extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean execCommand(String sqlCommand) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(sqlCommand);
+        return true;
+    }
+
+
     public List<Entry> getAllEntries() {
         List<Entry> returnList = new ArrayList<>();
 
@@ -97,8 +124,6 @@ public class DatabaseController extends SQLiteOpenHelper {
                 Entry entry = new Entry(id, content, title, name);
                 returnList.add(entry);
             } while (cursor.moveToNext());
-        } else {
-            // failure, do not add anything to the list
         }
         cursor.close();
         db.close();
@@ -184,4 +209,17 @@ public class DatabaseController extends SQLiteOpenHelper {
         return updates == numExpectedUpdates;
     }
 
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.setVersion(oldVersion);
+    }
+
+    public boolean isFilled() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.getPageSize();
+        long count = DatabaseUtils.queryNumEntries(db, m_ENTRY_TABLE_NAME);
+        db.close();
+
+        return count>2;
+    }
 }
