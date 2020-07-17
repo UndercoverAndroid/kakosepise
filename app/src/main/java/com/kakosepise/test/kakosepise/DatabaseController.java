@@ -136,4 +136,40 @@ public class DatabaseController extends SQLiteOpenHelper {
         return updates == numExpectedUpdates;
     }
 
+    // Method that deletes an existing entry in local db
+    public boolean deleteEntry(Entry _newEntry) {
+        int deletes = 0;
+        ContentValues cv = new ContentValues();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String stringId = Integer.toString(_newEntry.getM_ID());
+        deletes += db.delete(m_KAKOSEPISE_TABLE, m_ID + " = ?", new String[]{stringId});
+
+        db.close();
+        return deletes == 1;
+    }
+
+    // Method that deletes multiple existing entries in local db
+    public boolean deleteEntries(List<Entry> _newEntries) {
+        int updates = 0;
+        List<ContentValues> cvs = new ArrayList<ContentValues>();
+        int numExpectedUpdates = _newEntries.size();
+        String[] idStrings = new String[numExpectedUpdates];
+
+
+        for (int i = 0; i < numExpectedUpdates; i++) {
+            idStrings[i] = Integer.toString(_newEntries.get(i).getM_ID());
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for (int i = 0; i < numExpectedUpdates; i++) {
+            updates += db.delete(m_KAKOSEPISE_TABLE, m_ID + " = ?", idStrings);
+        }
+
+        db.close();
+        return updates == numExpectedUpdates;
+    }
+
 }
