@@ -19,7 +19,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public static final String m_POST_NAME = "post_name";
 
     public DatabaseController(@Nullable Context _context) {
-        super(_context, "entry.db", null, 1);
+        super(_context, "database.db", null, 1);
     }
 
     // Called when the database is first generated, contains sqlite statements that
@@ -135,4 +135,5 @@ public class DatabaseController extends SQLiteOpenHelper {
         db.close();
         return updates == numExpectedUpdates;
     }
+
 }

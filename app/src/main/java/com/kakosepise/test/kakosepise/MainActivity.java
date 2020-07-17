@@ -3,9 +3,9 @@ package com.kakosepise.test.kakosepise;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
 
     Button m_toastButton, m_viewAllButton;
     ListView m_list;
+    ArrayAdapter m_customerArrayAdapter;
+    DatabaseController m_db;
     static int counter = 1;
 
     @Override
@@ -24,27 +26,35 @@ public class MainActivity extends AppCompatActivity {
         m_list = findViewById(R.id.list_view);
         m_toastButton = findViewById(R.id.button_init);
         m_viewAllButton = findViewById(R.id.button2);
+        m_db = new DatabaseController(MainActivity.this);
+        final List<Entry> everyone = m_db.getAllEntries();
+        showCustomersInListView();
+
 
         m_toastButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Entry newEntry = new Entry(++counter, "This is some content", "Test content", "content-test");
-                DatabaseController db = new DatabaseController(MainActivity.this);
-                boolean success = db.addEntry(newEntry);
+                boolean success = m_db.addEntry(newEntry);
 
-                Toast.makeText(MainActivity.this, "Success = " + success, Toast.LENGTH_SHORT).show();
+                showCustomersInListView();
             }
         });
 
         m_viewAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseController db = new DatabaseController(MainActivity.this);
-                List<Entry> everyone = db.getAllEntries();
 
-                Toast.makeText(MainActivity.this, everyone.toString(), Toast.LENGTH_SHORT).show();
+                showCustomersInListView();
+
             }
         });
+    }
+
+    private void showCustomersInListView() {
+        // Defining an adaptor that will fill out the list view
+        m_customerArrayAdapter = new ArrayAdapter<Entry>(MainActivity.this, android.R.layout.simple_list_item_1, m_db.getAllEntries());
+        m_list.setAdapter(m_customerArrayAdapter);
     }
 
     public void sendMessage(View view) {
