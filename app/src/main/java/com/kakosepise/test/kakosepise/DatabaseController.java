@@ -7,41 +7,53 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseController extends SQLiteOpenHelper {
 
-    public static final String m_KAKOSEPISE_TABLE = "KAKOSEPISE_TABLE";
+    public static final String m_ENTRY_TABLE_NAME = "kakosepise";
     public static final String m_ID = "ID";
     public static final String m_POST_CONTENT = "post_content";
     public static final String m_POST_TITLE = "post_title";
     public static final String m_POST_NAME = "post_name";
+    public static final String DB_FILE_PATH = "kakosepise.db";
+    public static final String LOCAL_DB_FILE_PATH = "localDatabase.db";
 
     public DatabaseController(@Nullable Context _context) {
-        super(_context, "database.db", null, 1);
+        super(_context, DB_FILE_PATH, null, 1);
     }
+
 
     // Called when the database is first generated, contains sqlite statements that
     // generate the base tables
     @Override
     public void onCreate(SQLiteDatabase _sqLiteDatabase) {
-        String createTableStatement = "CREATE TABLE " + m_KAKOSEPISE_TABLE + " (\n" +
-                "\t\"" + m_ID + "\"\tINTEGER NOT NULL UNIQUE,\n" +
-                "\t\"" + m_POST_CONTENT + "\"\tTEXT NOT NULL,\n" +
-                "\t\"" + m_POST_TITLE + "\"\tTEXT NOT NULL,\n" +
-                "\t\"" + m_POST_NAME + "\"\tTEXT NOT NULL DEFAULT '',\n" +
-                "\tPRIMARY KEY(\"" + m_ID + "\")\n" +
-                ");";
-        _sqLiteDatabase.execSQL(createTableStatement);
+//        String createTableStatement = "CREATE TABLE " + m_ENTRY_TABLE_NAME + " (\n" +
+//                "\t\"" + m_ID + "\"\tINTEGER NOT NULL UNIQUE,\n" +
+//                "\t\"" + m_POST_CONTENT + "\"\tTEXT NOT NULL,\n" +
+//                "\t\"" + m_POST_TITLE + "\"\tTEXT NOT NULL,\n" +
+//                "\t\"" + m_POST_NAME + "\"\tTEXT NOT NULL DEFAULT '',\n" +
+//                "\tPRIMARY KEY(\"" + m_ID + "\")\n" +
+//                ");";
+//        _sqLiteDatabase.execSQL(createTableStatement);
 
     }
 
     // Called when version number of application changes, used for forward compatibility
     @Override
-    public void onUpgrade(SQLiteDatabase _sqLiteDatabase, int _i, int _i1) {
-
+    public void onUpgrade(SQLiteDatabase _sqLiteDatabase, int _oldVersion, int _newVersion) {
+        String sql = "DROP TABLE IF EXISTS " + m_ENTRY_TABLE_NAME;
+        _sqLiteDatabase.execSQL(sql);
+        onCreate(_sqLiteDatabase);
     }
+
 
     // Adds a single row into the database
     public boolean addEntry(Entry _entry) {
@@ -54,7 +66,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put(m_POST_TITLE, _entry.getM_post_title());
 
         // Returns true if the insert was successful
-        return db.insert(m_KAKOSEPISE_TABLE, null, cv) != -1;
+        return db.insert(m_ENTRY_TABLE_NAME, null, cv) != -1;
     }
 
     // TODO: Add REST API call for fetching json response
@@ -67,7 +79,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         List<Entry> returnList = new ArrayList<>();
 
         // Make get-all querry
-        String queryString = "select * from " + m_KAKOSEPISE_TABLE;
+        String queryString = "select * from " + m_ENTRY_TABLE_NAME;
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -104,7 +116,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String idString = Integer.toString(_newEntry.getM_ID());
 
-        updates = db.update(m_KAKOSEPISE_TABLE, cv, m_ID + " = ?", new String[]{idString});
+        updates = db.update(m_ENTRY_TABLE_NAME, cv, m_ID + " = ?", new String[]{idString});
 
         db.close();
         return updates > 0;
@@ -129,7 +141,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         for (int i = 0; i < numExpectedUpdates; i++) {
-            updates += db.update(m_KAKOSEPISE_TABLE, cvs.get(i), m_ID + " = ?", idStrings);
+            updates += db.update(m_ENTRY_TABLE_NAME, cvs.get(i), m_ID + " = ?", idStrings);
         }
 
         db.close();
@@ -144,7 +156,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String stringId = Integer.toString(_newEntry.getM_ID());
-        deletes += db.delete(m_KAKOSEPISE_TABLE, m_ID + " = ?", new String[]{stringId});
+        deletes += db.delete(m_ENTRY_TABLE_NAME, m_ID + " = ?", new String[]{stringId});
 
         db.close();
         return deletes == 1;
@@ -165,7 +177,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         for (int i = 0; i < numExpectedUpdates; i++) {
-            updates += db.delete(m_KAKOSEPISE_TABLE, m_ID + " = ?", idStrings);
+            updates += db.delete(m_ENTRY_TABLE_NAME, m_ID + " = ?", idStrings);
         }
 
         db.close();
