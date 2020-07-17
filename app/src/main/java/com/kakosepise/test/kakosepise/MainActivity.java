@@ -37,30 +37,7 @@ public class MainActivity extends AppCompatActivity {
         // Step 1 - We create an empty database
         m_db = new DatabaseController(MainActivity.this);
 
-        if(!m_db.isFilled()) {
-            // Step 2 - We fill it up with the rows from dataInit.sql in the asset folder
-            BufferedReader reader = null;
-            try {
-                reader = new BufferedReader(
-                        new InputStreamReader(getAssets().open(DatabaseController.m_INIT_PATH)));
-
-                // do reading, usually loop until end of file reading
-                String nextSql;
-                while ((nextSql = reader.readLine()) != null) {
-                    m_db.execCommand(nextSql.trim());
-                }
-            } catch (IOException e) {
-                //log the exception
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        //log the exception
-                    }
-                }
-            }
-        }
+        updateDatabase();
         showCustomersInListView();
 
 
@@ -92,6 +69,33 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"You deleted an item",Toast.LENGTH_SHORT);
             }
         });
+    }
+
+    private void updateDatabase() {
+        if(!m_db.isFilled()) {
+            // Step 2 - We fill it up with the rows from dataInit.sql in the asset folder
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(
+                        new InputStreamReader(getAssets().open(DatabaseController.m_INIT_PATH)));
+
+                // do reading, usually loop until end of file reading
+                String nextSql;
+                while ((nextSql = reader.readLine()) != null) {
+                    m_db.execCommand(nextSql.trim());
+                }
+            } catch (IOException e) {
+                //log the exception
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        //log the exception
+                    }
+                }
+            }
+        }
     }
 
     private void showCustomersInListView() {
