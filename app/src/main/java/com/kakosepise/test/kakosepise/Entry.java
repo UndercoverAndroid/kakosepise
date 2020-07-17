@@ -59,11 +59,8 @@ public class Entry {
 
     @Override
     public String toString() {
-        return "Entry{" +
-                "m_ID=" + m_ID +
-                ", m_post_content='" + m_post_content + '\'' +
-                ", m_post_title='" + m_post_title + '\'' +
-                ", m_post_name='" + m_post_name + '\'' +
-                '}';
+        return  m_ID +
+                " | " + m_post_title +
+                " | " + m_post_name;
     }
 }
