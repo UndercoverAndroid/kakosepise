@@ -96,6 +96,21 @@ public class DatabaseController extends SQLiteOpenHelper {
         return db.insert(m_ENTRY_TABLE_NAME, null, cv) != -1;
     }
 
+    // Adds a single row into the database, in place construction variant
+    public boolean addEntry(int _ID, String _post_content, String _post_title, String _post_name) {
+        Entry _entry = new Entry(_ID, _post_content,_post_title,_post_name);
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(m_ID, _entry.getM_ID());
+        cv.put(m_POST_CONTENT, _entry.getM_post_content());
+        cv.put(m_POST_NAME, _entry.getM_post_name());
+        cv.put(m_POST_TITLE, _entry.getM_post_title());
+
+        // Returns true if the insert was successful
+        return db.insert(m_ENTRY_TABLE_NAME, null, cv) != -1;
+    }
+
     // TODO: Add REST API call for fetching json response
     // Updates database, return value is success indicator
     public boolean updateDatabase() {
@@ -258,6 +273,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "    ELSE 2\n" +
                 "  END";
 
+        
         Cursor cursor = db.rawQuery(searchSql, null);
         List<Entry> returnList = new ArrayList<>();
         // If there are results, loop while there is a next entry in the database

@@ -12,11 +12,11 @@ public class Entry {
     private String m_post_title;
     private String m_post_name;
 
-    public Entry(int m_ID, String m_post_content, String m_post_title, String m_post_name) {
-        this.m_ID = m_ID;
-        this.m_post_content = m_post_content;
-        this.m_post_title = m_post_title;
-        this.m_post_name = m_post_name;
+    public Entry(int _ID, String _post_content, String _post_title, String _post_name) {
+        this.m_ID = _ID;
+        this.m_post_content = _post_content;
+        this.m_post_title = _post_title;
+        this.m_post_name = _post_name;
     }
 
     public Entry(JSONObject _jsonObject) throws JSONException {
