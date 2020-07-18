@@ -66,13 +66,13 @@ public class MainActivity extends AppCompatActivity {
                 Entry clickedEntry = (Entry) adapterView.getItemAtPosition(position);
                 m_db.deleteEntry(clickedEntry);
                 showCustomersInListView();
-                Toast.makeText(MainActivity.this,"You deleted an item",Toast.LENGTH_SHORT);
+                Toast.makeText(MainActivity.this, "You deleted an item", Toast.LENGTH_SHORT);
             }
         });
     }
 
     private void updateDatabase() {
-        if(!m_db.isFilled()) {
+        if (!m_db.isFilled()) {
             // Step 2 - We fill it up with the rows from dataInit.sql in the asset folder
             BufferedReader reader = null;
             try {

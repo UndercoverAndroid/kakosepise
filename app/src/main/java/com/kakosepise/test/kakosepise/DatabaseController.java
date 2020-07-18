@@ -198,6 +198,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         } catch (ParseException | JSONException | java.text.ParseException e) {
 
             e.printStackTrace();
+            return false;
         }
 
         return true;
@@ -241,6 +242,41 @@ public class DatabaseController extends SQLiteOpenHelper {
 
         db.close();
         return deletes == 1;
+    }
+
+    // Method that deletes an existing entry in local db
+    public List<Entry> searchEntries(String searchWord) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String searchSql = "SELECT *\n" +
+                "FROM " + m_ENTRY_TABLE_NAME + "\n" +
+                "WHERE " + m_POST_NAME + " LIKE '%" + searchWord + "%'\n" +
+                "ORDER BY\n" +
+                "  CASE\n" +
+                "    WHEN " + m_POST_NAME + " LIKE '" + searchWord + "%' THEN 1\n" +
+                "    WHEN post_name LIKE '%" + searchWord + "' THEN 3\n" +
+                "    ELSE 2\n" +
+                "  END";
+
+        Cursor cursor = db.rawQuery(searchSql, null);
+        List<Entry> returnList = new ArrayList<>();
+        // If there are results, loop while there is a next entry in the database
+        if (cursor.moveToFirst()) {
+            do {
+                // Save
+                int id = cursor.getInt(0);
+                String content = cursor.getString(1);
+                String title = cursor.getString(2);
+                String name = cursor.getString(3);
+
+                Entry entry = new Entry(id, content, title, name);
+                returnList.add(entry);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        db.close();
+        return returnList;
     }
 
     // Method that deletes multiple existing entries in local db

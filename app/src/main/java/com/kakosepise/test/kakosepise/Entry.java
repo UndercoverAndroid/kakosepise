@@ -71,7 +71,7 @@ public class Entry {
 
     @Override
     public String toString() {
-        return  m_ID +
+        return m_ID +
                 " | " + m_post_title +
                 " | " + m_post_name;
     }
