@@ -1,6 +1,10 @@
 package com.kakosepise.test.kakosepise;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Entity;
+
+import java.io.FileReader;
 
 public class Entry {
     private int m_ID;
@@ -13,6 +17,14 @@ public class Entry {
         this.m_post_content = m_post_content;
         this.m_post_title = m_post_title;
         this.m_post_name = m_post_name;
+    }
+
+    public Entry(JSONObject _jsonObject) throws JSONException {
+        this.m_ID = (int) _jsonObject.get(DatabaseController.m_ID);
+        this.m_post_content = (String) _jsonObject.get(DatabaseController.m_POST_CONTENT);
+        this.m_post_title = (String) _jsonObject.get(DatabaseController.m_POST_TITLE);
+        this.m_post_name = (String) _jsonObject.get(DatabaseController.m_POST_NAME);
+
     }
 
     // Partial copy constructor, leaves ID unchanged

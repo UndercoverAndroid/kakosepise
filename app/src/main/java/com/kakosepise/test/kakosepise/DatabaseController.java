@@ -8,14 +8,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
-import java.io.DataInputStream;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,15 +27,18 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public static final String m_ENTRY_TABLE_NAME = "kakosepise";
     public static final String m_ID = "ID";
+    public static final String m_DATE = "date";
+    public static final String m_MODIFY_DATE = "modified";
     public static final String m_POST_CONTENT = "post_content";
     public static final String m_POST_TITLE = "post_title";
     public static final String m_POST_NAME = "post_name";
     public static final String m_INIT_PATH = "database/dataInit.sql";
-    public static final String DB_FILE_PATH = "kakosepise.db";
+    public static final String m_DB_FILE_PATH = "kakosepise.db";
     public static final String LOCAL_DB_FILE_PATH = "localDatabase.db";
+    public static final Date m_LAST_UPDATE = new Date();
 
     public DatabaseController(@Nullable Context _context) {
-        super(_context, DB_FILE_PATH, null, 1);
+        super(_context, m_DB_FILE_PATH, null, 1);
     }
 
 
@@ -57,7 +64,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (scanner!=null) {
+        if (scanner != null) {
             while (scanner.hasNextLine()) {
                 String nextSqlStatement = scanner.nextLine().trim();
                 _sqLiteDatabase.execSQL(nextSqlStatement);
@@ -98,6 +105,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public boolean execCommand(String sqlCommand) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(sqlCommand);
+        db.close();
         return true;
     }
 
@@ -145,6 +153,54 @@ public class DatabaseController extends SQLiteOpenHelper {
 
         db.close();
         return updates > 0;
+    }
+
+    public boolean processJson(String _jsonString) throws ParseException {
+        JSONParser jsonParser = new JSONParser();
+        jsonParser.parse(_jsonString);
+
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        try {
+            Object obj = jsonParser.parse(_jsonString);
+            JSONArray array = (JSONArray) obj;
+            int arraySize = array.length();
+            for (int i = 0; i < arraySize; i++) {
+                JSONObject tmpObj = (JSONObject) array.get(i);
+
+                // Getting and formatting the next element of JSON array
+                int tmpID = (int) tmpObj.get(m_ID);
+                String tmpContent = (String) tmpObj.get(m_POST_CONTENT);
+                String tmpTitle = (String) tmpObj.get(m_POST_TITLE);
+                String tmpName = (String) tmpObj.get(m_POST_NAME);
+
+                // Creating entry
+                Entry tmpEntry = new Entry(tmpID, tmpContent, tmpTitle, tmpName);
+
+                String tmpPostDateString = (String) tmpObj.get(m_DATE);
+                String tmpModifyDateString = (String) tmpObj.get(m_MODIFY_DATE);
+                Date tmpPostDate = format.parse(tmpPostDateString);
+                Date tmpModifyDate = format.parse(tmpModifyDateString);
+
+                // Current date - date of update
+                Date currentDate = new Date();
+
+                // Check if the entry needs to be updated or added
+                if (tmpPostDate.after(m_LAST_UPDATE)) {
+                    addEntry(tmpEntry);
+                } else {
+                    updateEntry(tmpEntry);
+                }
+
+
+            }
+
+        } catch (ParseException | JSONException | java.text.ParseException e) {
+
+            e.printStackTrace();
+        }
+
+        return true;
     }
 
     // Method that updates multiple existing entries in local db with new values
@@ -209,6 +265,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         return updates == numExpectedUpdates;
     }
 
+
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.setVersion(oldVersion);
@@ -220,6 +277,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         long count = DatabaseUtils.queryNumEntries(db, m_ENTRY_TABLE_NAME);
         db.close();
 
-        return count>2;
+        return count > 2;
     }
 }
