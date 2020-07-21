@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,10 +30,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button m_toastButton, m_viewAllButton, m_restButton;
+    Button m_toastButton, m_viewAllButton, m_restButton, m_searchButton;
     ListView m_list;
     ArrayAdapter m_customerArrayAdapter;
     DatabaseController m_db;
+    EditText m_searchText;
     static int counter = 1;
 
     @Override
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         m_toastButton = findViewById(R.id.button_init);
         m_viewAllButton = findViewById(R.id.button2);
         m_restButton = findViewById(R.id.rest_btn);
+
+        m_searchButton = findViewById(R.id.searchButton);
+        m_searchText = findViewById(R.id.searchField);
 
         // Database initialization
         // Step 1 - We create an empty database
@@ -119,13 +124,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        m_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        m_searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Entry clickedEntry = (Entry) adapterView.getItemAtPosition(position);
-                m_db.deleteEntry(clickedEntry);
-                showCustomersInListView();
-                Toast.makeText(MainActivity.this, "You deleted an item", Toast.LENGTH_SHORT);
+            public void onClick(View view) {
+
+                m_customerArrayAdapter = new ArrayAdapter<Entry>(MainActivity.this,android.R.layout.simple_list_item_1,m_db.searchEntries(m_searchText.getText().toString().trim()));
+                m_list.setAdapter(m_customerArrayAdapter);
             }
         });
     }
