@@ -94,8 +94,9 @@ public class MainActivity extends AppCompatActivity {
                         int m_done = 0;
                         String m_cmpDate = "2019-05-17T10:09:28";
                         String m_date = "";
+
                         try {
-                            JSONObject m_term = m_response.getJSONObject(0);
+                            JSONObject m_term = m_response.getJSONObject(m_i);
                             m_searchTerm = m_term.getString("slug");
                             JSONObject m_tmpTitle = m_term.getJSONObject("title");
                             m_title = m_tmpTitle.getString("rendered");
@@ -104,11 +105,15 @@ public class MainActivity extends AppCompatActivity {
                             m_content = m_tmpContent.getString("rendered");
                             m_date = m_term.getString("date");
 
+                            Toast.makeText(MainActivity.this, m_title + m_date, Toast.LENGTH_SHORT).show();
+
+                            m_db.addEntry(m_ID, m_content, m_title, m_searchTerm);
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Toast.makeText(MainActivity.this, m_title + m_date, Toast.LENGTH_SHORT).show();
+
 
                     }
 
