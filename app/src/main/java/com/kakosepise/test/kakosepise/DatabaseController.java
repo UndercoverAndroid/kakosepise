@@ -6,7 +6,8 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +35,6 @@ public class DatabaseController extends SQLiteOpenHelper {
     public static final String m_POST_NAME = "post_name";
     public static final String m_INIT_PATH = "database/dataInit.sql";
     public static final String m_DB_FILE_PATH = "kakosepise.db";
-    public static final String LOCAL_DB_FILE_PATH = "localDatabase.db";
     public static final Date m_LAST_UPDATE = new Date();
 
     public DatabaseController(@Nullable Context _context) {
@@ -98,7 +98,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     // Adds a single row into the database, in place construction variant
     public boolean addEntry(int _ID, String _post_content, String _post_title, String _post_name) {
-        Entry _entry = new Entry(_ID, _post_content,_post_title,_post_name);
+        Entry _entry = new Entry(_ID, _post_content, _post_title, _post_name);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -273,7 +273,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "    ELSE 2\n" +
                 "  END";
 
-        
+
         Cursor cursor = db.rawQuery(searchSql, null);
         List<Entry> returnList = new ArrayList<>();
         // If there are results, loop while there is a next entry in the database
