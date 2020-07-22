@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <com.mancj.materialsearchbar.MaterialSearchBar
+        android:id="@+id/searchBar"
+        style="@style/MaterialSearchBarDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_field_username"
+        android:layout_marginTop="150dp"
+        app:mt_hint="Custom hint"
+        app:mt_maxSuggestionsCount="10"
+        app:mt_speechMode="true" />
+
     <Button
         android:id="@+id/button_init"
         android:layout_width="120dp"
