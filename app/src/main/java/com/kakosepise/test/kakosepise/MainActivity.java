@@ -13,6 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ListView m_list;
     ArrayAdapter m_customerArrayAdapter;
     DatabaseController m_db;
-    EditText m_searchText;
+    MaterialSearchBar m_searchText;
     static int counter = 1;
 
     @Override
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         m_restButton = findViewById(R.id.rest_btn);
 
         m_searchButton = findViewById(R.id.searchButton);
-        m_searchText = findViewById(R.id.searchField);
+        m_searchText = findViewById(R.id.searchBar);
 
         // Database initialization
         // Step 1 - We create an empty database
