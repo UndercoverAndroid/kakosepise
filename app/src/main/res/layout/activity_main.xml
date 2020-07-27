@@ -11,7 +11,9 @@
         style="@style/MaterialSearchBarLight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         app:mt_hint="Custom hint"
         app:mt_maxSuggestionsCount="10"
         app:mt_speechMode="true" />
@@ -33,17 +35,18 @@
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="278dp"
+        android:layout_height="200dp"
+        android:layout_above="@+id/searchButton"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginRight="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
         android:layout_marginTop="110dp"
-        android:layout_marginBottom="38dp" />
+        android:layout_marginEnd="-4dp"
+        android:layout_marginRight="-4dp"
+        android:layout_marginBottom="66dp" />
 
     <Button
         android:id="@+id/button2"
@@ -92,6 +95,15 @@
         android:layout_marginRight="161dp"
         android:layout_marginBottom="26dp"
         android:text="Search" />
+
+    <ImageView
+        android:id="@+id/logo_c"
+        android:layout_width="350dp"
+        android:layout_height="70dp"
+        android:layout_above="@+id/searchBar"
+        android:layout_marginBottom="-100dp"
+        android:layout_centerInParent="true"
+        app:srcCompat="@drawable/logo_c" />
 
 
 </RelativeLayout>
