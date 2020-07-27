@@ -180,18 +180,9 @@ public class MainActivity extends AppCompatActivity {
 
         m_inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         CustomSuggestionAdapter csa = new CustomSuggestionAdapter(m_inflater);
-        List<Entry> suggestions = new ArrayList<>();
-        for (int i = 1; i < 11; i++) {
-            suggestions.add(new Entry(i,"content","title","name"));
-        }
-        csa.setSuggestions(suggestions);
+        List<Entry> resultList = m_db.searchEntries(_keyWord);
+        csa.setSuggestions(resultList);
         m_searchText.setCustomSuggestionAdapter(csa);
-//
-//        CustomSuggestionAdapter csa = new CustomSuggestionAdapter(m_inflater);
-//        List<Entry> resultList = m_db.searchEntries(_keyWord);
-//        List<Entry> suggestions = new ArrayList<>(resultList);
-//        csa.setSuggestions(suggestions);
-//        m_searchText.setCustomSuggestionAdapter(csa);
     }
 
     private void updateDatabase() {
