@@ -9,6 +9,7 @@
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/searchBar"
         style="@style/MaterialSearchBarLight"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="120dp"
@@ -16,7 +17,13 @@
         android:layout_marginRight="20dp"
         app:mt_hint="Custom hint"
         app:mt_maxSuggestionsCount="10"
-        app:mt_speechMode="true" />
+        app:mt_speechMode="true"
+        app:mt_searchBarColor="@color/colorAccent"
+        app:mt_hintColor="@color/colorPrimary"
+        app:mt_textColor="@color/colorPrimary"
+        app:mt_highlightedTextColor="@color/colorPrimary"
+        app:mt_placeholderColor="@color/colorPrimary"
+        />
 
     <Button
         android:id="@+id/button_init"

@@ -2,6 +2,7 @@ package com.kakosepise.test.kakosepise;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,6 +23,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +33,11 @@ public class MainActivity extends AppCompatActivity {
     ListView m_list;
     ArrayAdapter m_customerArrayAdapter;
     DatabaseController m_db;
+
+    // Suggestion sorcery
     MaterialSearchBar m_searchText;
+
+
     static int counter = 1;
 
     @Override
@@ -53,7 +60,14 @@ public class MainActivity extends AppCompatActivity {
 
         updateDatabase();
         showCustomersInListView();
-
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        CustomSuggestionAdapter csa = new CustomSuggestionAdapter(inflater);
+        List<Entry> suggestions = new ArrayList<>();
+        for (int i = 1; i < 11; i++) {
+            suggestions.add(new Entry(i,"content","title","name"));
+        }
+        csa.setSuggestions(suggestions);
+        m_searchText.setCustomSuggestionAdapter(csa);
 
         m_toastButton.setOnClickListener(new View.OnClickListener() {
             @Override
