@@ -2,11 +2,12 @@ package com.kakosepise.test.kakosepise;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,6 +27,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     ListView m_list;
     ArrayAdapter m_customerArrayAdapter;
     DatabaseController m_db;
+    LayoutInflater m_inflater;
 
     // Suggestion sorcery
     MaterialSearchBar m_searchText;
@@ -60,14 +64,36 @@ public class MainActivity extends AppCompatActivity {
 
         updateDatabase();
         showCustomersInListView();
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        CustomSuggestionAdapter csa = new CustomSuggestionAdapter(inflater);
+
+        m_inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        CustomSuggestionAdapter csa = new CustomSuggestionAdapter(m_inflater);
         List<Entry> suggestions = new ArrayList<>();
-        for (int i = 1; i < 11; i++) {
-            suggestions.add(new Entry(i,"content","title","name"));
-        }
+        suggestions.add(new Entry(1," "," "," "));
         csa.setSuggestions(suggestions);
         m_searchText.setCustomSuggestionAdapter(csa);
+
+        m_searchText.addTextChangeListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String keyWord = charSequence.toString().trim();
+                fillSuggestions(keyWord);
+                Toast.makeText(getApplicationContext(),"KURAC", LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String keyWord = charSequence.toString().trim();
+                fillSuggestions(keyWord);
+                Toast.makeText(getApplicationContext(),"KURAC2", LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String keyWord = editable.toString().trim();
+                fillSuggestions(keyWord);
+                Toast.makeText(getApplicationContext(),"KURAC3", LENGTH_SHORT).show();
+            }
+        });
 
         m_toastButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                             m_content = m_tmpContent.getString("rendered");
                             m_date = m_term.getString("date");
 
-                            Toast.makeText(MainActivity.this, m_title + m_date, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, m_title + m_date, LENGTH_SHORT).show();
 
                             m_db.addEntry(m_ID, m_content, m_title, m_searchTerm);
 
@@ -130,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "FAIL", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "FAIL", LENGTH_SHORT).show();
                     }
                 });
 
@@ -148,6 +174,24 @@ public class MainActivity extends AppCompatActivity {
                 m_list.setAdapter(m_customerArrayAdapter);
             }
         });
+    }
+
+    private void fillSuggestions(String _keyWord) {
+
+        m_inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        CustomSuggestionAdapter csa = new CustomSuggestionAdapter(m_inflater);
+        List<Entry> suggestions = new ArrayList<>();
+        for (int i = 1; i < 11; i++) {
+            suggestions.add(new Entry(i,"content","title","name"));
+        }
+        csa.setSuggestions(suggestions);
+        m_searchText.setCustomSuggestionAdapter(csa);
+//
+//        CustomSuggestionAdapter csa = new CustomSuggestionAdapter(m_inflater);
+//        List<Entry> resultList = m_db.searchEntries(_keyWord);
+//        List<Entry> suggestions = new ArrayList<>(resultList);
+//        csa.setSuggestions(suggestions);
+//        m_searchText.setCustomSuggestionAdapter(csa);
     }
 
     private void updateDatabase() {
