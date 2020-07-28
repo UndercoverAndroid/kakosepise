@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -42,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        m_list = findViewById(R.id.list_view);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        //m_list = findViewById(R.id.list_view);
         //m_restButton = findViewById(R.id.rest_btn);
 
         m_searchButton = findViewById(R.id.searchButton);
@@ -53,12 +56,13 @@ public class MainActivity extends AppCompatActivity {
         m_db = new DatabaseController(MainActivity.this);
 
         updateDatabase();
-        showCustomersInListView();
+        //showCustomersInListView();
 
         m_inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         CustomSuggestionAdapter csa = new CustomSuggestionAdapter(m_inflater);
         List<Entry> suggestions = new ArrayList<>();
         suggestions.add(new Entry(1," "," "," "));
+        suggestions.add(new Entry(2," "," "," "));
         csa.setSuggestions(suggestions);
         m_searchText.setCustomSuggestionAdapter(csa);
 

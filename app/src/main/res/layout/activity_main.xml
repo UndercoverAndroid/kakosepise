@@ -25,7 +25,7 @@
         app:mt_placeholderColor="@color/colorPrimary"
         />
 
-    <ListView
+    <!--ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -39,7 +39,7 @@
         android:layout_marginTop="110dp"
         android:layout_marginEnd="-4dp"
         android:layout_marginRight="-4dp"
-        android:layout_marginBottom="66dp" />
+        android:layout_marginBottom="66dp" /-->
 
     <Button
         android:id="@+id/searchButton"
