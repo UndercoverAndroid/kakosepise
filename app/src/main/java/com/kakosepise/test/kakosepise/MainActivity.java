@@ -11,15 +11,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.mancj.materialsearchbar.MaterialSearchBar;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         m_list = findViewById(R.id.list_view);
-        m_toastButton = findViewById(R.id.button_init);
-        m_viewAllButton = findViewById(R.id.button2);
-        m_restButton = findViewById(R.id.rest_btn);
+        //m_restButton = findViewById(R.id.rest_btn);
 
         m_searchButton = findViewById(R.id.searchButton);
         m_searchText = findViewById(R.id.searchBar);
@@ -75,108 +65,89 @@ public class MainActivity extends AppCompatActivity {
         m_searchText.addTextChangeListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String keyWord = charSequence.toString().trim();
-                fillSuggestions(keyWord);
-                Toast.makeText(getApplicationContext(),"KURAC", LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String keyWord = charSequence.toString().trim();
-                fillSuggestions(keyWord);
-                Toast.makeText(getApplicationContext(),"KURAC2", LENGTH_SHORT).show();
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 String keyWord = editable.toString().trim();
-                fillSuggestions(keyWord);
-                Toast.makeText(getApplicationContext(),"KURAC3", LENGTH_SHORT).show();
+                fillSuggestionsList(keyWord);
             }
         });
 
-        m_toastButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Entry newEntry = new Entry(++counter, "This is some content", "Test content", "content-test");
-                boolean success = m_db.addEntry(newEntry);
 
-                showCustomersInListView();
-            }
-        });
-
-        m_viewAllButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                showCustomersInListView();
-
-            }
-        });
-
-        m_restButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "https://kakosepise.com/wp-json/wp/v2/ksp_rec/?page=1";
-
-                JsonArrayRequest m_jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray m_response) {
-                        String m_searchTerm = "";
-                        String m_title = "";
-                        String m_content = "";
-                        int m_ID = 0;
-                        int m_i =0;
-                        int m_done = 0;
-                        String m_cmpDate = "2019-05-17T10:09:28";
-                        String m_date = "";
-
-                        try {
-                            JSONObject m_term = m_response.getJSONObject(m_i);
-                            m_searchTerm = m_term.getString("slug");
-                            JSONObject m_tmpTitle = m_term.getJSONObject("title");
-                            m_title = m_tmpTitle.getString("rendered");
-                            m_ID = m_term.getInt("id");
-                            JSONObject m_tmpContent = m_term.getJSONObject("content");
-                            m_content = m_tmpContent.getString("rendered");
-                            m_date = m_term.getString("date");
-
-                            Toast.makeText(MainActivity.this, m_title + m_date, LENGTH_SHORT).show();
-
-                            m_db.addEntry(m_ID, m_content, m_title, m_searchTerm);
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "FAIL", LENGTH_SHORT).show();
-                    }
-                });
-
-                RESTSingleton.getInstance(MainActivity.this).addToRequestQueue(m_jsonArrayRequest);
-
-            }
-        });
+//        m_restButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String url = "https://kakosepise.com/wp-json/wp/v2/ksp_rec/?page=1";
+//
+//                JsonArrayRequest m_jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+//                    @Override
+//                    public void onResponse(JSONArray m_response) {
+//                        String m_searchTerm = "";
+//                        String m_title = "";
+//                        String m_content = "";
+//                        int m_ID = 0;
+//                        int m_i =0;
+//                        int m_done = 0;
+//                        String m_cmpDate = "2019-05-17T10:09:28";
+//                        String m_date = "";
+//
+//                        try {
+//                            JSONObject m_term = m_response.getJSONObject(m_i);
+//                            m_searchTerm = m_term.getString("slug");
+//                            JSONObject m_tmpTitle = m_term.getJSONObject("title");
+//                            m_title = m_tmpTitle.getString("rendered");
+//                            m_ID = m_term.getInt("id");
+//                            JSONObject m_tmpContent = m_term.getJSONObject("content");
+//                            m_content = m_tmpContent.getString("rendered");
+//                            m_date = m_term.getString("date");
+//
+//                            Toast.makeText(MainActivity.this, m_title + m_date, LENGTH_SHORT).show();
+//
+//                            m_db.addEntry(m_ID, m_content, m_title, m_searchTerm);
+//
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//
+//                    }
+//
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(MainActivity.this, "FAIL", LENGTH_SHORT).show();
+//                    }
+//                });
+//
+//                RESTSingleton.getInstance(MainActivity.this).addToRequestQueue(m_jsonArrayRequest);
+//
+//            }
+//        });
 
 
         m_searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                m_customerArrayAdapter = new ArrayAdapter<Entry>(MainActivity.this,android.R.layout.simple_list_item_1,m_db.searchEntries(m_searchText.getText().toString().trim()));
-                m_list.setAdapter(m_customerArrayAdapter);
+                fetchSearchResults();
             }
         });
     }
 
-    private void fillSuggestions(String _keyWord) {
+    private void fetchSearchResults() {
+        m_customerArrayAdapter = new ArrayAdapter<Entry>(MainActivity.this,android.R.layout.simple_list_item_1,m_db.searchEntries(m_searchText.getText().toString().trim()));
+        m_list.setAdapter(m_customerArrayAdapter);
+    }
+
+    private void fillSuggestionsList(String _keyWord) {
 
         m_inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         CustomSuggestionAdapter csa = new CustomSuggestionAdapter(m_inflater);
@@ -218,8 +189,4 @@ public class MainActivity extends AppCompatActivity {
         m_list.setAdapter(m_customerArrayAdapter);
     }
 
-    public void sendMessage(View view) {
-
-
-    }
 }
