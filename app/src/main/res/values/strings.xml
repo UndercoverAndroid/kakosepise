@@ -4,4 +4,6 @@
     <string name="usernameText">Username</string>
     <string name="passwordString">Password</string>
     <string name="id">ID</string>
+    <string name="logoDescription">TODO</string>
+    <string name="search">Search</string>
 </resources>

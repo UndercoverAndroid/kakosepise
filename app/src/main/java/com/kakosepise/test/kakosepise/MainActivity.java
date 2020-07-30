@@ -25,11 +25,11 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button m_toastButton, m_viewAllButton, m_restButton, m_searchButton;
     ListView m_list;
     ArrayAdapter m_customerArrayAdapter;
     DatabaseController m_db;
     LayoutInflater m_inflater;
+    CustomSuggestionAdapter m_customAdapter;
 
     // Suggestion sorcery
     MaterialSearchBar m_searchText;
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         //m_list = findViewById(R.id.list_view);
         //m_restButton = findViewById(R.id.rest_btn);
 
-        m_searchButton = findViewById(R.id.searchButton);
         m_searchText = findViewById(R.id.searchBar);
 
         // Database initialization
@@ -59,28 +58,33 @@ public class MainActivity extends AppCompatActivity {
         //showCustomersInListView();
 
         m_inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        CustomSuggestionAdapter csa = new CustomSuggestionAdapter(m_inflater);
-        List<Entry> suggestions = new ArrayList<>();
-        suggestions.add(new Entry(1," "," "," "));
-        suggestions.add(new Entry(2," "," "," "));
-        csa.setSuggestions(suggestions);
-        m_searchText.setCustomSuggestionAdapter(csa);
+        m_customAdapter = new CustomSuggestionAdapter(m_inflater);
+        List<Entry> suggestions = new ArrayList<>(m_db.getAllEntries());
+        m_customAdapter.setSuggestions(suggestions);
+        m_searchText.setCustomSuggestionAdapter(m_customAdapter);
 
+        m_searchText.setMaxSuggestionCount(4);
         m_searchText.addTextChangeListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                String keyWord = charSequence.toString().trim();
+                if(keyWord.equals("")){
+                    emptySuggestionsList();
+                }
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                String keyWord = charSequence.toString().trim();
+                if(keyWord.equals("")){
+                    emptySuggestionsList();
+                }
+                fillSuggestionsList(keyWord);
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String keyWord = editable.toString().trim();
-                fillSuggestionsList(keyWord);
+
             }
         });
 
@@ -137,13 +141,6 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
-        m_searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                fetchSearchResults();
-            }
-        });
     }
 
     private void fetchSearchResults() {
@@ -151,13 +148,16 @@ public class MainActivity extends AppCompatActivity {
         m_list.setAdapter(m_customerArrayAdapter);
     }
 
+
+    private void emptySuggestionsList() {
+        m_customAdapter.clearSuggestions();
+        m_searchText.setCustomSuggestionAdapter(m_customAdapter);
+    }
     private void fillSuggestionsList(String _keyWord) {
 
-        m_inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        CustomSuggestionAdapter csa = new CustomSuggestionAdapter(m_inflater);
-        List<Entry> resultList = m_db.searchEntries(_keyWord);
-        csa.setSuggestions(resultList);
-        m_searchText.setCustomSuggestionAdapter(csa);
+        m_customAdapter.clearSuggestions();
+        m_customAdapter.setSuggestions(m_db.searchEntries(_keyWord));
+        m_searchText.setCustomSuggestionAdapter(m_customAdapter);
     }
 
     private void updateDatabase() {

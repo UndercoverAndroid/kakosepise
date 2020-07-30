@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:padding="22dp"
+    tools:context=".MainActivity"
+    android:gravity="top">
+
+    <ImageView
+        android:id="@+id/logo_c"
+        android:layout_height="68dp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/logoDescription"
+        app:srcCompat="@drawable/logo_c" />
 
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/searchBar"
@@ -12,18 +23,15 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        app:mt_hint="Custom hint"
-        app:mt_maxSuggestionsCount="10"
-        app:mt_speechMode="true"
-        app:mt_searchBarColor="@color/colorAccent"
-        app:mt_hintColor="@color/colorPrimary"
-        app:mt_textColor="@color/colorPrimary"
         app:mt_highlightedTextColor="@color/colorPrimary"
+        app:mt_hint="Custom hint"
+        app:mt_hintColor="@color/colorPrimary"
+        app:mt_maxSuggestionsCount="10"
         app:mt_placeholderColor="@color/colorPrimary"
-        />
+        app:mt_placeholder="@string/search"
+        app:mt_searchBarColor="@color/colorAccent"
+        app:mt_speechMode="true"
+        app:mt_textColor="@color/colorPrimary" />
 
     <!--ListView
         android:id="@+id/list_view"
@@ -41,30 +49,6 @@
         android:layout_marginRight="-4dp"
         android:layout_marginBottom="66dp" /-->
 
-    <Button
-        android:id="@+id/searchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="164dp"
-        android:layout_marginLeft="164dp"
-        android:layout_marginEnd="159dp"
-        android:layout_marginRight="159dp"
-        android:layout_marginBottom="65dp"
-        android:text="Search" />
-
-    <ImageView
-        android:id="@+id/logo_c"
-        android:layout_width="350dp"
-        android:layout_height="70dp"
-        android:layout_above="@+id/searchBar"
-        android:layout_marginBottom="-100dp"
-        android:layout_centerInParent="true"
-        app:srcCompat="@drawable/logo_c" />
 
 
-</RelativeLayout>
+</LinearLayout>
