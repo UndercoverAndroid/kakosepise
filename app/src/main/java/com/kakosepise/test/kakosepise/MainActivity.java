@@ -23,7 +23,7 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MaterialSearchBar.OnSearchActionListener {
 
     ListView m_list;
     ArrayAdapter m_customerArrayAdapter;
@@ -57,29 +57,31 @@ public class MainActivity extends AppCompatActivity {
         updateDatabase();
         //showCustomersInListView();
 
+
         m_inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        m_searchText.setOnSearchActionListener(this);
         m_customAdapter = new CustomSuggestionAdapter(m_inflater);
-        List<Entry> suggestions = new ArrayList<>(m_db.getAllEntries());
-        m_customAdapter.setSuggestions(suggestions);
         m_searchText.setCustomSuggestionAdapter(m_customAdapter);
 
-        m_searchText.setMaxSuggestionCount(4);
+
         m_searchText.addTextChangeListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String keyWord = charSequence.toString().trim();
-                if(keyWord.equals("")){
-                    emptySuggestionsList();
-                }
+
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
                 String keyWord = charSequence.toString().trim();
-                if(keyWord.equals("")){
-                    emptySuggestionsList();
+
+                if(!keyWord.equals(""))fillSuggestionsList(keyWord);
+                else
+                {
+                    m_searchText.hideSuggestionsList();
+
                 }
-                fillSuggestionsList(keyWord);
+
             }
 
             @Override
@@ -143,21 +145,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void fetchSearchResults() {
-        m_customerArrayAdapter = new ArrayAdapter<Entry>(MainActivity.this,android.R.layout.simple_list_item_1,m_db.searchEntries(m_searchText.getText().toString().trim()));
-        m_list.setAdapter(m_customerArrayAdapter);
-    }
-
 
     private void emptySuggestionsList() {
         m_customAdapter.clearSuggestions();
         m_searchText.setCustomSuggestionAdapter(m_customAdapter);
     }
     private void fillSuggestionsList(String _keyWord) {
-
-        m_customAdapter.clearSuggestions();
+        m_searchText.clearSuggestions();
+        m_searchText.hideSuggestionsList();
+        m_customAdapter = new CustomSuggestionAdapter(m_inflater);;
         m_customAdapter.setSuggestions(m_db.searchEntries(_keyWord));
         m_searchText.setCustomSuggestionAdapter(m_customAdapter);
+        m_searchText.showSuggestionsList();
     }
 
     private void updateDatabase() {
@@ -193,4 +192,33 @@ public class MainActivity extends AppCompatActivity {
         m_list.setAdapter(m_customerArrayAdapter);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onSearchStateChanged(boolean enabled) {
+        if(!enabled)
+        {
+            m_searchText.hideSuggestionsList();
+            m_searchText.closeSearch();
+        }else
+        {
+
+        }
+
+
+    }
+
+    @Override
+    public void onSearchConfirmed(CharSequence text) {
+        startSearch(text.toString().trim(),true,null,true);
+
+    }
+
+    @Override
+    public void onButtonClicked(int buttonCode) {
+
+    }
 }
