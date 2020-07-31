@@ -1,5 +1,6 @@
 package com.kakosepise.test.kakosepise;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -33,6 +34,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public static final String m_POST_CONTENT = "post_content";
     public static final String m_POST_TITLE = "post_title";
     public static final String m_POST_NAME = "post_name";
+    public static final String m_POST_DATE = "post_date";
     public static final String m_INIT_PATH = "database/dataInit.sql";
     public static final String m_DB_FILE_PATH = "kakosepise.db";
     public static final Date m_LAST_UPDATE = new Date();
@@ -52,6 +54,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "\t\"" + m_POST_CONTENT + "\"\tTEXT NOT NULL,\n" +
                 "\t\"" + m_POST_TITLE + "\"\tTEXT NOT NULL,\n" +
                 "\t\"" + m_POST_NAME + "\"\tTEXT NOT NULL DEFAULT '',\n" +
+                "\t\"" + m_POST_DATE + "\"\tTEXT NOT NULL DEFAULT '0000-00-00 00:00:00',\n" +
                 "\tPRIMARY KEY(\"" + m_ID + "\")\n" +
                 ");";
         _sqLiteDatabase.execSQL(createTableStatement);
@@ -91,14 +94,15 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put(m_POST_CONTENT, _entry.getM_post_content());
         cv.put(m_POST_NAME, _entry.getM_post_name());
         cv.put(m_POST_TITLE, _entry.getM_post_title());
+        cv.put(m_POST_DATE, _entry.getM_post_date());
 
         // Returns true if the insert was successful
         return db.insert(m_ENTRY_TABLE_NAME, null, cv) != -1;
     }
 
     // Adds a single row into the database, in place construction variant
-    public boolean addEntry(int _ID, String _post_content, String _post_title, String _post_name) {
-        Entry _entry = new Entry(_ID, _post_content, _post_title, _post_name);
+    public boolean addEntry(int _ID, String _post_content, String _post_title, String _post_name, String _post_date) {
+        Entry _entry = new Entry(_ID, _post_content, _post_title, _post_name, _post_date);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -106,6 +110,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put(m_POST_CONTENT, _entry.getM_post_content());
         cv.put(m_POST_NAME, _entry.getM_post_name());
         cv.put(m_POST_TITLE, _entry.getM_post_title());
+        cv.put(m_POST_TITLE, _entry.getM_post_date());
 
         // Returns true if the insert was successful
         return db.insert(m_ENTRY_TABLE_NAME, null, cv) != -1;
@@ -143,8 +148,9 @@ public class DatabaseController extends SQLiteOpenHelper {
                 String content = cursor.getString(1);
                 String title = cursor.getString(2);
                 String name = cursor.getString(3);
+                String date = cursor.getString(4);
 
-                Entry entry = new Entry(id, content, title, name);
+                Entry entry = new Entry(id, content, title, name, date);
                 returnList.add(entry);
             } while (cursor.moveToNext());
         }
@@ -160,6 +166,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put(m_POST_CONTENT, _newEntry.getM_post_content());
         cv.put(m_POST_TITLE, _newEntry.getM_post_title());
         cv.put(m_POST_NAME, _newEntry.getM_post_name());
+        cv.put(m_POST_NAME, _newEntry.getM_post_date());
 
         SQLiteDatabase db = this.getWritableDatabase();
         String idString = Integer.toString(_newEntry.getM_ID());
@@ -174,7 +181,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         JSONParser jsonParser = new JSONParser();
         jsonParser.parse(_jsonString);
 
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
         try {
             Object obj = jsonParser.parse(_jsonString);
@@ -188,9 +195,10 @@ public class DatabaseController extends SQLiteOpenHelper {
                 String tmpContent = (String) tmpObj.get(m_POST_CONTENT);
                 String tmpTitle = (String) tmpObj.get(m_POST_TITLE);
                 String tmpName = (String) tmpObj.get(m_POST_NAME);
+                String tmpDate = (String) tmpObj.get(m_POST_DATE);
 
                 // Creating entry
-                Entry tmpEntry = new Entry(tmpID, tmpContent, tmpTitle, tmpName);
+                Entry tmpEntry = new Entry(tmpID, tmpContent, tmpTitle, tmpName, tmpDate);
 
                 String tmpPostDateString = (String) tmpObj.get(m_DATE);
                 String tmpModifyDateString = (String) tmpObj.get(m_MODIFY_DATE);
@@ -284,8 +292,9 @@ public class DatabaseController extends SQLiteOpenHelper {
                 String content = cursor.getString(1);
                 String title = cursor.getString(2);
                 String name = cursor.getString(3);
+                String date = cursor.getString(4);
 
-                Entry entry = new Entry(id, content, title, name);
+                Entry entry = new Entry(id, content, title, name, date);
                 returnList.add(entry);
             } while (cursor.moveToNext());
         }
